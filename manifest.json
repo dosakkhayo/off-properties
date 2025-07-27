@@ -1,0 +1,11 @@
+{
+    "id": "off-properties",
+    "name": "off-properties",
+    "version": "1.0.0",
+    "minAppVersion": "0.15.0",
+    "description": "Toggle visibility of YAML properties section in notes",
+    "author": "dosakkhayo",
+    "authorUrl": "",
+    "fundingUrl": "",
+    "isDesktopOnly": false
+}
