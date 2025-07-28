@@ -119,5 +119,23 @@ var PropertiesToggleSettingTab = class extends import_obsidian.PluginSettingTab 
       await this.plugin.saveSettings();
       this.plugin.applyVisibilityState();
     }));
+    containerEl.createEl("hr");
+    const donateSection = containerEl.createEl("div", {
+      cls: "donate-section"
+    });
+    donateSection.createEl("p", {
+      text: "\uC774 \uD50C\uB7EC\uADF8\uC778\uC774 \uB3C4\uC6C0\uC774 \uB418\uC5C8\uB2E4\uBA74 \uCEE4\uD53C \uD55C \uC794 \uC0AC\uC8FC\uC138\uC694 \u2615\uFE0F"
+    });
+    const donateLink = donateSection.createEl("a", {
+      href: "https://buymeacoffee.com/dosakkhayo",
+      cls: "donate-button"
+    });
+    donateLink.createEl("img", {
+      attr: {
+        src: "https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png",
+        alt: "Buy Me A Coffee",
+        style: "height: 40px;"
+      }
+    });
   }
 };
