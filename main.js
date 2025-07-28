@@ -28,12 +28,13 @@ __export(main_exports, {
 });
 module.exports = __toCommonJS(main_exports);
 var import_obsidian = require("obsidian");
+var DEFAULT_SETTINGS = {
+  isHidden: false
+};
 var PropertiesTogglePlugin = class extends import_obsidian.Plugin {
-  constructor() {
-    super(...arguments);
-    this.isHidden = false;
-  }
   async onload() {
+    await this.loadSettings();
+    this.addSettingTab(new PropertiesToggleSettingTab(this.app, this));
     this.addRibbonIcon("eye", "\uC18D\uC131 \uD328\uB110 \uD1A0\uAE00", () => {
       this.togglePropertyPane();
     });
@@ -50,9 +51,17 @@ var PropertiesTogglePlugin = class extends import_obsidian.Plugin {
         this.applyVisibilityState();
       })
     );
+    this.applyVisibilityState();
+  }
+  async loadSettings() {
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+  }
+  async saveSettings() {
+    await this.saveData(this.settings);
   }
   togglePropertyPane() {
-    this.isHidden = !this.isHidden;
+    this.settings.isHidden = !this.settings.isHidden;
+    this.saveSettings();
     this.applyVisibilityState();
   }
   applyVisibilityState() {
@@ -74,9 +83,9 @@ var PropertiesTogglePlugin = class extends import_obsidian.Plugin {
         const containers = leaf.view.containerEl.querySelectorAll(selector);
         containers.forEach((container) => {
           if (container instanceof HTMLElement) {
-            container.style.display = this.isHidden ? "none" : "";
+            container.style.display = this.settings.isHidden ? "none" : "";
             if (selector.includes("cm-line")) {
-              if (this.isHidden) {
+              if (this.settings.isHidden) {
                 container.setAttribute("data-hidden-by-plugin", "true");
                 container.style.display = "none";
               } else {
@@ -88,12 +97,27 @@ var PropertiesTogglePlugin = class extends import_obsidian.Plugin {
             }
             let parent = container.parentElement;
             while (parent && parent.classList.contains("metadata-container")) {
-              parent.style.display = this.isHidden ? "none" : "";
+              parent.style.display = this.settings.isHidden ? "none" : "";
               parent = parent.parentElement;
             }
           }
         });
       }
     }
+  }
+};
+var PropertiesToggleSettingTab = class extends import_obsidian.PluginSettingTab {
+  constructor(app, plugin) {
+    super(app, plugin);
+    this.plugin = plugin;
+  }
+  display() {
+    const { containerEl } = this;
+    containerEl.empty();
+    new import_obsidian.Setting(containerEl).setName("\uC18D\uC131 \uD328\uB110 \uC228\uAE30\uAE30").setDesc("\uC18D\uC131 \uD328\uB110\uC744 \uC228\uAE41\uB2C8\uB2E4.").addToggle((toggle) => toggle.setValue(this.plugin.settings.isHidden).onChange(async (value) => {
+      this.plugin.settings.isHidden = value;
+      await this.plugin.saveSettings();
+      this.plugin.applyVisibilityState();
+    }));
   }
 };
