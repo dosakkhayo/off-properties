@@ -1,0 +1,19 @@
+.donate-section {
+    text-align: center;
+    margin-top: 2em;
+    padding: 1em;
+}
+
+.donate-section p {
+    margin-bottom: 1em;
+    color: var(--text-muted);
+}
+
+.donate-button {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.donate-button:hover {
+    transform: scale(1.05);
+}
