@@ -83,21 +83,32 @@ var PropertiesTogglePlugin = class extends import_obsidian.Plugin {
         const containers = leaf.view.containerEl.querySelectorAll(selector);
         containers.forEach((container) => {
           if (container instanceof HTMLElement) {
-            container.style.display = this.settings.isHidden ? "none" : "";
+            if (container.closest(".markdown-embed")) {
+              return;
+            }
+            if (this.settings.isHidden) {
+              container.style.setProperty("display", "none", "important");
+            } else {
+              container.style.removeProperty("display");
+            }
             if (selector.includes("cm-line")) {
               if (this.settings.isHidden) {
                 container.setAttribute("data-hidden-by-plugin", "true");
-                container.style.display = "none";
+                container.style.setProperty("display", "none", "important");
               } else {
                 if (container.getAttribute("data-hidden-by-plugin")) {
                   container.removeAttribute("data-hidden-by-plugin");
-                  container.style.display = "";
+                  container.style.removeProperty("display");
                 }
               }
             }
             let parent = container.parentElement;
-            while (parent && parent.classList.contains("metadata-container")) {
-              parent.style.display = this.settings.isHidden ? "none" : "";
+            while (parent && !parent.closest(".markdown-embed") && parent.classList.contains("metadata-container")) {
+              if (this.settings.isHidden) {
+                parent.style.setProperty("display", "none", "important");
+              } else {
+                parent.style.removeProperty("display");
+              }
               parent = parent.parentElement;
             }
           }
